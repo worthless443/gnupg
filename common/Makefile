@@ -1,0 +1,18 @@
+_FILES=$(shell ls *.c)
+OBJS=$(patsubst %.c, %.o, $(_FILES))
+GNUPG_LOCALSTATEDIR="localesdir"
+GNUPG_DATADIR="datadir"
+GNUPG_LIBDIR="libdir"
+GNUPG_LIBEXECDIR="libexedir"
+GNUPG_BINDIR="bindir"
+GNUPG_SYSCONFDIR="confdir"
+FLAGS=-DGNUPG_SYSCONFDIR=$(GNUPG_SYSCONFDIR) -DGNUPG_BINDIR=$(GNUPG_BINDIR) -DGNUPG_LIBEXECDIR=$(GNUPG_LIBEXECDIR) -DGNUPG_LIBDIR=$(GNUPG_LIBDIR) -DGNUPG_DATADIR=$(GNUPG_DATADIR) -DGNUPG_LOCALSTATEDIR=$(GNUPG_LOCALSTATEDIR) 
+LIB=libcommon.a
+all: $(LIB)
+$(OBJS): %.o : %.c
+	gcc -c $(FLAGS) -I../ $^ -o $@
+$(LIB): $(OBJS)
+	ar rcs $@ $^
+
+clean:
+	rm -rf *.o
